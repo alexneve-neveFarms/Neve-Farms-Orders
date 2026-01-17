@@ -186,6 +186,158 @@
             display: none;
         }
         
+        .order-total {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-left: 5px solid #667eea;
+        }
+        
+        .order-total h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+        
+        .total-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        
+        .total-amount {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            margin: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        .order-summary-item {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .order-summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .summary-item-details {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .summary-total {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn-confirm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 2;
+        }
+        
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 1.8em;
@@ -254,10 +406,32 @@
                     </table>
                 </div>
                 
+                <div class="order-total" id="orderTotal" style="display: none;">
+                    <h3>Order Total</h3>
+                    <div class="total-details">
+                        <span><strong id="totalBunches">0</strong> bunches selected</span>
+                        <span class="total-amount" id="totalAmount">$0.00</span>
+                    </div>
+                </div>
+                
                 <input type="hidden" name="Order_Details" id="orderDetails">
                 
-                <button type="submit" class="submit-btn" id="submitBtn">Submit Order</button>
+                <button type="button" class="submit-btn" id="submitBtn" onclick="showOrderSummary()">Review Order</button>
             </form>
+            
+            <div class="modal" id="orderModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Review Your Order</h2>
+                        <button class="close-modal" onclick="closeOrderSummary()">&times;</button>
+                    </div>
+                    <div id="orderSummaryContent"></div>
+                    <div class="modal-actions">
+                        <button class="btn-secondary" onclick="closeOrderSummary()">Edit Order</button>
+                        <button class="btn-confirm" onclick="confirmOrder()">Confirm & Submit</button>
+                    </div>
+                </div>
+            </div>
             
             <div class="success-message" id="successMessage">
                 ✓ Order submitted successfully! You'll receive a confirmation email shortly.
@@ -329,27 +503,121 @@
                     <td>${stemsPerBunch}</td>
                     <td>${pricePerBunch}</td>
                     <td>${inventory}</td>
-                    <td><input type="number" class="quantity-input" id="qty_${index}" min="0" value="0" step="1"></td>
+                    <td><input type="number" class="quantity-input" id="qty_${index}" min="0" value="0" step="1" onchange="updateOrderTotal()"></td>
                 `;
                 tbody.appendChild(row);
             });
+        }
+        
+        function updateOrderTotal() {
+            let totalBunches = 0;
+            let totalAmount = 0;
+            
+            productsData.forEach((product, index) => {
+                const qty = parseInt(document.getElementById(`qty_${index}`).value) || 0;
+                if (qty > 0) {
+                    totalBunches += qty;
+                    const priceStr = product[3] || '$0';
+                    const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
+                    totalAmount += price * qty;
+                }
+            });
+            
+            const orderTotalDiv = document.getElementById('orderTotal');
+            if (totalBunches > 0) {
+                orderTotalDiv.style.display = 'block';
+                document.getElementById('totalBunches').textContent = totalBunches;
+                document.getElementById('totalAmount').textContent = `${totalAmount.toFixed(2)}`;
+            } else {
+                orderTotalDiv.style.display = 'none';
+            }
+        }
+        
+        function showOrderSummary() {
+            const floristName = document.getElementById('floristName').value.trim();
+            const floristEmail = document.getElementById('floristEmail').value.trim();
+            const errorMsg = document.getElementById('errorMessage');
+            
+            errorMsg.style.display = 'none';
+            
+            if (!floristName || !floristEmail) {
+                errorMsg.textContent = '✗ Please fill in your name and email.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            const orderItems = [];
+            let totalBunches = 0;
+            let totalAmount = 0;
+            
+            productsData.forEach((product, index) => {
+                const qty = parseInt(document.getElementById(`qty_${index}`).value) || 0;
+                if (qty > 0) {
+                    const priceStr = product[3] || '$0';
+                    const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
+                    totalBunches += qty;
+                    totalAmount += price * qty;
+                    
+                    orderItems.push({
+                        variety: product[0],
+                        color: product[1],
+                        stems: product[2],
+                        price: product[3],
+                        inventory: product[4],
+                        quantity: qty,
+                        lineTotal: price * qty
+                    });
+                }
+            });
+            
+            if (orderItems.length === 0) {
+                errorMsg.textContent = '✗ Please select at least one item to order.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            let summaryHTML = `
+                <div style="margin-bottom: 20px;">
+                    <strong>Ordering as:</strong> ${floristName}<br>
+                    <strong>Email:</strong> ${floristEmail}
+                </div>
+            `;
+            
+            orderItems.forEach(item => {
+                summaryHTML += `
+                    <div class="order-summary-item">
+                        <div class="summary-item-name">${item.variety} (${item.color})</div>
+                        <div class="summary-item-details">
+                            ${item.quantity} bunches × ${item.price} = ${item.lineTotal.toFixed(2)}<br>
+                            ${item.stems} stems/bunch
+                        </div>
+                    </div>
+                `;
+            });
+            
+            summaryHTML += `
+                <div class="summary-total">
+                    Total: ${totalBunches} bunches | ${totalAmount.toFixed(2)}
+                </div>
+            `;
+            
+            document.getElementById('orderSummaryContent').innerHTML = summaryHTML;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+        
+        function closeOrderSummary() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+        
+        function confirmOrder() {
+            document.getElementById('orderModal').style.display = 'none';
+            submitOrder();
         }
 
         async function submitOrder() {
             const floristName = document.getElementById('floristName').value.trim();
             const floristEmail = document.getElementById('floristEmail').value.trim();
-            const errorMsg = document.getElementById('errorMessage');
-            const successMsg = document.getElementById('successMessage');
             const submitBtn = document.getElementById('submitBtn');
-            
-            errorMsg.style.display = 'none';
-            successMsg.style.display = 'none';
-            
-            if (!floristName || !floristEmail) {
-                errorMsg.textContent = '✗ Please fill in your name and email.';
-                errorMsg.style.display = 'block';
-                return false;
-            }
             
             const orderItems = [];
             productsData.forEach((product, index) => {
@@ -365,12 +633,6 @@
                     });
                 }
             });
-            
-            if (orderItems.length === 0) {
-                errorMsg.textContent = '✗ Please select at least one item to order.';
-                errorMsg.style.display = 'block';
-                return false;
-            }
             
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting Order...';
@@ -392,16 +654,10 @@
             document.getElementById('orderDetails').value = orderSummary;
             
             // Let the form submit naturally
+            document.getElementById('orderForm').submit();
+            
             return true;
         }
-        
-        // Intercept form submission to add order details
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (submitOrder()) {
-                this.submit();
-            }
-        });
 
         loadProducts();
     </script>
