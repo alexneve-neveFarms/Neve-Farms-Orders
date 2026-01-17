@@ -123,6 +123,10 @@
             background: #f8f9fa;
         }
         
+        .product-card {
+            display: none;
+        }
+        
         .quantity-input {
             width: 70px;
             padding: 8px;
@@ -347,17 +351,102 @@
                 padding: 20px;
             }
             
-            .product-table {
-                font-size: 13px;
+            .customer-info {
+                padding: 20px;
             }
             
-            .product-table th,
-            .product-table td {
-                padding: 10px 5px;
+            .product-table {
+                display: none;
+            }
+            
+            .product-card {
+                display: block;
+            }
+            
+            .flower-card {
+                background: white;
+                border: 2px solid #e0e0e0;
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .flower-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 12px;
+                padding-bottom: 12px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .flower-name {
+                font-size: 1.1em;
+                font-weight: 700;
+                color: #333;
+                flex: 1;
+            }
+            
+            .flower-card-details {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 15px;
+                font-size: 0.95em;
+            }
+            
+            .detail-item {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .detail-label {
+                font-size: 0.85em;
+                color: #666;
+                margin-bottom: 3px;
+            }
+            
+            .detail-value {
+                font-weight: 600;
+                color: #333;
+            }
+            
+            .flower-card-quantity {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 8px;
+            }
+            
+            .flower-card-quantity label {
+                font-weight: 600;
+                font-size: 1em;
+                color: #333;
+            }
+            
+            .flower-card-quantity input {
+                width: 80px;
+                padding: 10px;
+                font-size: 18px;
+                border: 2px solid #667eea;
+                border-radius: 6px;
+                text-align: center;
             }
             
             .quantity-input {
                 width: 60px;
+            }
+            
+            .modal-content {
+                margin: 10px;
+                padding: 25px;
+                max-height: 90vh;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
             }
         }
     </style>
@@ -390,6 +479,8 @@
                 <div class="products-section">
                     <h2>Available Flowers</h2>
                     <div id="loading" class="loading">Loading availability...</div>
+                    
+                    <!-- Desktop Table View -->
                     <table class="product-table" id="productTable" style="display: none;">
                         <thead>
                             <tr>
@@ -404,6 +495,10 @@
                         <tbody id="productBody">
                         </tbody>
                     </table>
+                    
+                    <!-- Mobile Card View -->
+                    <div class="product-card" id="productCards">
+                    </div>
                 </div>
                 
                 <div class="order-total" id="orderTotal" style="display: none;">
@@ -476,6 +571,7 @@
 
         function displayProducts() {
             const tbody = document.getElementById('productBody');
+            const cardsContainer = document.getElementById('productCards');
             const loading = document.getElementById('loading');
             const table = document.getElementById('productTable');
             
@@ -488,6 +584,7 @@
             table.style.display = 'table';
             
             tbody.innerHTML = '';
+            cardsContainer.innerHTML = '';
             
             productsData.forEach((product, index) => {
                 const variety = product[0] || '';
@@ -496,6 +593,7 @@
                 const pricePerBunch = product[3] || '';
                 const inventory = product[4] || '';
                 
+                // Desktop table row
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><strong>${variety}</strong></td>
@@ -506,7 +604,49 @@
                     <td><input type="number" class="quantity-input" id="qty_${index}" min="0" value="0" step="1" onchange="updateOrderTotal()"></td>
                 `;
                 tbody.appendChild(row);
+                
+                // Mobile card
+                const card = document.createElement('div');
+                card.className = 'flower-card';
+                card.innerHTML = `
+                    <div class="flower-card-header">
+                        <div class="flower-name">${variety}</div>
+                        <span class="color-badge">${color}</span>
+                    </div>
+                    <div class="flower-card-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Stems/Bunch</span>
+                            <span class="detail-value">${stemsPerBunch}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Price/Bunch</span>
+                            <span class="detail-value">${pricePerBunch}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Available</span>
+                            <span class="detail-value">${inventory} bunches</span>
+                        </div>
+                    </div>
+                    <div class="flower-card-quantity">
+                        <label for="qty_mobile_${index}">Bunches:</label>
+                        <input type="number" id="qty_mobile_${index}" min="0" value="0" step="1" onchange="syncQuantity(${index}, 'mobile')">
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
             });
+        }
+        
+        function syncQuantity(index, source) {
+            const desktopInput = document.getElementById(`qty_${index}`);
+            const mobileInput = document.getElementById(`qty_mobile_${index}`);
+            
+            if (source === 'mobile') {
+                desktopInput.value = mobileInput.value;
+            } else {
+                mobileInput.value = desktopInput.value;
+            }
+            
+            updateOrderTotal();
         }
         
         function updateOrderTotal() {
