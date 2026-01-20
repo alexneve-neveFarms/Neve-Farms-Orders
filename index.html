@@ -319,6 +319,74 @@
             margin-top: 25px;
         }
         
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .image-modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .image-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .image-modal-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+        
+        .image-modal-body {
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f5f5;
+        }
+        
+        .image-modal-body img {
+            max-width: 100%;
+            max-height: 70vh;
+            display: block;
+        }
+        
+        .clickable-variety {
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 700;
+        }
+        
+        .clickable-variety:hover {
+            color: #764ba2;
+        }
+        
+        .no-image {
+            color: #333;
+            font-weight: 700;
+            cursor: default;
+        }
+        
         .btn-secondary {
             background: #e0e0e0;
             color: #333;
@@ -530,6 +598,18 @@
                 </div>
             </div>
             
+            <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+                <div class="image-modal-content" onclick="event.stopPropagation()">
+                    <div class="image-modal-header">
+                        <h3 id="imageModalTitle">Flower Image</h3>
+                        <button class="close-modal" onclick="closeImageModal()">&times;</button>
+                    </div>
+                    <div class="image-modal-body">
+                        <img id="imageModalImg" src="" alt="Flower">
+                    </div>
+                </div>
+            </div>
+            
             <div class="success-message" id="successMessage">
                 ✓ Order submitted successfully! You'll receive a confirmation email shortly.
             </div>
@@ -594,11 +674,16 @@
                 const stemsPerBunch = product[2] || '';
                 const pricePerBunch = product[3] || '';
                 const inventory = product[4] || '';
+                const imageUrl = product[5] || '';
+                
+                const varietyHTML = imageUrl 
+                    ? `<span class="clickable-variety" onclick="showFlowerImage('${variety}', '${imageUrl}')">${variety}</span>`
+                    : `<span class="no-image">${variety}</span>`;
                 
                 // Desktop table row
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><strong>${variety}</strong></td>
+                    <td><strong>${varietyHTML}</strong></td>
                     <td><span class="color-badge">${color}</span></td>
                     <td>${stemsPerBunch}</td>
                     <td>${pricePerBunch}</td>
@@ -612,7 +697,7 @@
                 card.className = 'flower-card';
                 card.innerHTML = `
                     <div class="flower-card-header">
-                        <div class="flower-name">${variety}</div>
+                        <div class="flower-name">${varietyHTML}</div>
                         <span class="color-badge">${color}</span>
                     </div>
                     <div class="flower-card-details">
@@ -636,6 +721,16 @@
                 `;
                 cardsContainer.appendChild(card);
             });
+        }
+        
+        function showFlowerImage(varietyName, imageUrl) {
+            document.getElementById('imageModalTitle').textContent = varietyName;
+            document.getElementById('imageModalImg').src = imageUrl;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
         }
         
         function syncQuantity(index, source) {
