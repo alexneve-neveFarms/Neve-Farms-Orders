@@ -724,6 +724,15 @@
         }
         
         function showFlowerImage(varietyName, imageUrl) {
+            console.log('showFlowerImage called!');
+            console.log('Variety:', varietyName);
+            console.log('Image URL:', imageUrl);
+            
+            if (!imageUrl || imageUrl.trim() === '') {
+                alert('No image available for this flower.');
+                return;
+            }
+            
             document.getElementById('imageModalTitle').textContent = varietyName;
             document.getElementById('imageModalImg').src = imageUrl;
             document.getElementById('imageModal').style.display = 'flex';
