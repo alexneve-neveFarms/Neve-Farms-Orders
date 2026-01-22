@@ -601,7 +601,7 @@
                 const imageUrl = product[5] || '';
                 
                 const varietyHTML = imageUrl 
-                    ? `<a href="${imageUrl}" target="_blank" class="clickable-variety">${variety}</a>`
+                    ? `<a href="javascript:void(0)" onclick="showFlowerImage('${variety.replace(/'/g, "\\'")}', '${imageUrl}')" class="clickable-variety">${variety}</a>`
                     : variety;
                 
                 const row = document.createElement('tr');
@@ -792,6 +792,12 @@
 
         function closeImageModal() {
             document.getElementById('imageModal').style.display = 'none';
+        }
+        
+        function showFlowerImage(varietyName, imageUrl) {
+            document.getElementById('imageModalTitle').textContent = varietyName;
+            document.getElementById('imageModalImg').src = imageUrl;
+            document.getElementById('imageModal').style.display = 'flex';
         }
 
         loadProducts();
