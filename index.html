@@ -138,7 +138,7 @@
         }
         
         .quantity-input {
-            width: 70px;
+            width: 80px;
             padding: 8px;
             border: 2px solid #e0e0e0;
             border-radius: 6px;
@@ -154,6 +154,16 @@
             color: #1976d2;
             font-size: 14px;
             font-weight: 500;
+        }
+        
+        .clickable-variety {
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .clickable-variety:hover {
+            color: #764ba2;
         }
         
         .submit-btn {
@@ -180,9 +190,7 @@
             transform: none;
         }
         
-        .success-message {
-            background: #4caf50;
-            color: white;
+        .success-message, .error-message {
             padding: 20px;
             border-radius: 8px;
             margin-top: 20px;
@@ -190,14 +198,14 @@
             display: none;
         }
         
+        .success-message {
+            background: #4caf50;
+            color: white;
+        }
+        
         .error-message {
             background: #f44336;
             color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            text-align: center;
-            display: none;
         }
         
         .order-total {
@@ -287,10 +295,6 @@
             border-bottom: 1px solid #e0e0e0;
         }
         
-        .order-summary-item:last-child {
-            border-bottom: none;
-        }
-        
         .summary-item-name {
             font-weight: 600;
             color: #333;
@@ -319,78 +323,6 @@
             margin-top: 25px;
         }
         
-        .image-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .image-modal-content {
-            max-width: 90%;
-            max-height: 90vh;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .image-modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .image-modal-header h3 {
-            margin: 0;
-            font-size: 1.3em;
-        }
-        
-        .image-modal-body {
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f5f5f5;
-        }
-        
-        .image-modal-body img {
-            max-width: 100%;
-            max-height: 70vh;
-            display: block;
-        }
-        
-        .clickable-variety {
-            color: #667eea;
-            cursor: pointer;
-            text-decoration: underline;
-            font-weight: 700;
-        }
-        
-        .clickable-variety:hover {
-            color: #764ba2;
-        }
-            color: #333;
-            font-weight: 700;
-            cursor: default;
-        }
-        
-        .no-image {
-            color: #333;
-            font-weight: 700;
-            cursor: default;
-        }
-        
         .btn-secondary {
             background: #e0e0e0;
             color: #333;
@@ -401,10 +333,6 @@
             border-radius: 8px;
             cursor: pointer;
             flex: 1;
-        }
-        
-        .btn-secondary:hover {
-            background: #d0d0d0;
         }
         
         .btn-confirm {
@@ -419,9 +347,40 @@
             flex: 2;
         }
         
-        .btn-confirm:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .image-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .image-modal-body img {
+            max-width: 100%;
+            max-height: 70vh;
+            display: block;
         }
         
         @media (max-width: 768px) {
@@ -430,10 +389,6 @@
             }
             
             .content {
-                padding: 20px;
-            }
-            
-            .customer-info {
                 padding: 20px;
             }
             
@@ -448,7 +403,6 @@
             .flower-card-header {
                 display: flex;
                 justify-content: space-between;
-                align-items: flex-start;
                 margin-bottom: 12px;
                 padding-bottom: 12px;
                 border-bottom: 1px solid #e0e0e0;
@@ -458,7 +412,6 @@
                 font-size: 1.1em;
                 font-weight: 700;
                 color: #333;
-                flex: 1;
             }
             
             .flower-card-details {
@@ -494,33 +447,10 @@
                 border-radius: 8px;
             }
             
-            .flower-card-quantity label {
-                font-weight: 600;
-                font-size: 1em;
-                color: #333;
-            }
-            
             .flower-card-quantity input {
                 width: 80px;
                 padding: 10px;
                 font-size: 18px;
-                border: 2px solid #667eea;
-                border-radius: 6px;
-                text-align: center;
-            }
-            
-            .quantity-input {
-                width: 60px;
-            }
-            
-            .modal-content {
-                margin: 10px;
-                padding: 25px;
-                max-height: 90vh;
-            }
-            
-            .modal-actions {
-                flex-direction: column;
             }
         }
     </style>
@@ -554,7 +484,6 @@
                     <h2>Available Flowers</h2>
                     <div id="loading" class="loading">Loading availability...</div>
                     
-                    <!-- Desktop Table View -->
                     <table class="product-table" id="productTable" style="display: none;">
                         <thead>
                             <tr>
@@ -566,13 +495,10 @@
                                 <th>Order Qty</th>
                             </tr>
                         </thead>
-                        <tbody id="productBody">
-                        </tbody>
+                        <tbody id="productBody"></tbody>
                     </table>
                     
-                    <!-- Mobile Card View -->
-                    <div class="product-card" id="productCards">
-                    </div>
+                    <div class="product-card" id="productCards"></div>
                 </div>
                 
                 <div class="order-total" id="orderTotal" style="display: none;">
@@ -605,7 +531,7 @@
             <div class="image-modal" id="imageModal" onclick="closeImageModal()">
                 <div class="image-modal-content" onclick="event.stopPropagation()">
                     <div class="image-modal-header">
-                        <h3 id="imageModalTitle">Flower Image</h3>
+                        <h3 id="imageModalTitle">Flower</h3>
                         <button class="close-modal" onclick="closeImageModal()">&times;</button>
                     </div>
                     <div class="image-modal-body">
@@ -615,7 +541,7 @@
             </div>
             
             <div class="success-message" id="successMessage">
-                ✓ Order submitted successfully! You'll receive a confirmation email shortly.
+                ✓ Order submitted successfully! Check your email for confirmation.
             </div>
             
             <div class="error-message" id="errorMessage">
@@ -638,19 +564,13 @@
                 header: false,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    console.log('Raw CSV data:', results.data);
-                    
-                    // Skip the header row (index 0) and filter out empty rows
                     productsData = results.data.slice(1).filter(row => {
                         return row[0] && row[0].trim() !== '' && row[0].toLowerCase() !== 'variety';
                     });
-                    
-                    console.log('Filtered products:', productsData);
                     displayProducts();
                 },
                 error: function(error) {
                     document.getElementById('loading').innerHTML = '⚠️ Error loading products. Please refresh the page.';
-                    console.error('Error loading CSV:', error);
                 }
             });
         }
@@ -662,7 +582,7 @@
             const table = document.getElementById('productTable');
             
             if (productsData.length === 0) {
-                loading.innerHTML = '⚠️ No products available at the moment.';
+                loading.innerHTML = '⚠️ No products available.';
                 return;
             }
             
@@ -675,28 +595,26 @@
             productsData.forEach((product, index) => {
                 const variety = product[0] || '';
                 const color = product[1] || '';
-                const stemsPerBunch = product[2] || '';
-                const pricePerBunch = product[3] || '';
+                const stems = product[2] || '';
+                const price = product[3] || '';
                 const inventory = product[4] || '';
                 const imageUrl = product[5] || '';
                 
                 const varietyHTML = imageUrl 
-                    ? `<span class="clickable-variety" onclick="showFlowerImage('${variety}', '${imageUrl}')">${variety}</span>`
-                    : `<span class="no-image">${variety}</span>`;
+                    ? `<a href="${imageUrl}" target="_blank" class="clickable-variety">${variety}</a>`
+                    : variety;
                 
-                // Desktop table row
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><strong>${varietyHTML}</strong></td>
                     <td><span class="color-badge">${color}</span></td>
-                    <td>${stemsPerBunch}</td>
-                    <td>${pricePerBunch}</td>
+                    <td>${stems}</td>
+                    <td>${price}</td>
                     <td>${inventory}</td>
                     <td><input type="number" class="quantity-input" id="qty_${index}" min="0" value="0" step="1" onchange="updateOrderTotal()"></td>
                 `;
                 tbody.appendChild(row);
                 
-                // Mobile card
                 const card = document.createElement('div');
                 card.className = 'flower-card';
                 card.innerHTML = `
@@ -707,11 +625,11 @@
                     <div class="flower-card-details">
                         <div class="detail-item">
                             <span class="detail-label">Stems/Bunch</span>
-                            <span class="detail-value">${stemsPerBunch}</span>
+                            <span class="detail-value">${stems}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Price/Bunch</span>
-                            <span class="detail-value">${pricePerBunch}</span>
+                            <span class="detail-value">${price}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Available</span>
@@ -720,45 +638,23 @@
                     </div>
                     <div class="flower-card-quantity">
                         <label for="qty_mobile_${index}">Bunches:</label>
-                        <input type="number" id="qty_mobile_${index}" min="0" value="0" step="1" onchange="syncQuantity(${index}, 'mobile')">
+                        <input type="number" id="qty_mobile_${index}" min="0" value="0" step="1" onchange="syncQuantity(${index})">
                     </div>
                 `;
                 cardsContainer.appendChild(card);
             });
         }
-        
-        function showFlowerImage(varietyName, imageUrl) {
-            console.log('showFlowerImage called!');
-            console.log('Variety:', varietyName);
-            console.log('Image URL:', imageUrl);
-            
-            if (!imageUrl || imageUrl.trim() === '') {
-                alert('No image available for this flower.');
-                return;
+
+        function syncQuantity(index) {
+            const desktop = document.getElementById(`qty_${index}`);
+            const mobile = document.getElementById(`qty_mobile_${index}`);
+            if (desktop && mobile) {
+                desktop.value = mobile.value;
+                mobile.value = desktop.value;
             }
-            
-            document.getElementById('imageModalTitle').textContent = varietyName;
-            document.getElementById('imageModalImg').src = imageUrl;
-            document.getElementById('imageModal').style.display = 'flex';
-        }
-        
-        function closeImageModal() {
-            document.getElementById('imageModal').style.display = 'none';
-        }
-        
-        function syncQuantity(index, source) {
-            const desktopInput = document.getElementById(`qty_${index}`);
-            const mobileInput = document.getElementById(`qty_mobile_${index}`);
-            
-            if (source === 'mobile') {
-                desktopInput.value = mobileInput.value;
-            } else {
-                mobileInput.value = desktopInput.value;
-            }
-            
             updateOrderTotal();
         }
-        
+
         function updateOrderTotal() {
             let totalBunches = 0;
             let totalAmount = 0;
@@ -777,12 +673,12 @@
             if (totalBunches > 0) {
                 orderTotalDiv.style.display = 'block';
                 document.getElementById('totalBunches').textContent = totalBunches;
-                document.getElementById('totalAmount').textContent = `${totalAmount.toFixed(2)}`;
+                document.getElementById('totalAmount').textContent = totalAmount.toFixed(2);
             } else {
                 orderTotalDiv.style.display = 'none';
             }
         }
-        
+
         function showOrderSummary() {
             const floristName = document.getElementById('floristName').value.trim();
             const floristEmail = document.getElementById('floristEmail').value.trim();
@@ -826,45 +722,37 @@
                 return;
             }
             
-            let summaryHTML = `
-                <div style="margin-bottom: 20px;">
-                    <strong>Ordering as:</strong> ${floristName}<br>
-                    <strong>Email:</strong> ${floristEmail}
-                </div>
-            `;
+            let summaryHTML = `<div style="margin-bottom: 20px;">
+                <strong>Ordering as:</strong> ${floristName}<br>
+                <strong>Email:</strong> ${floristEmail}
+            </div>`;
             
             orderItems.forEach(item => {
-                summaryHTML += `
-                    <div class="order-summary-item">
-                        <div class="summary-item-name">${item.variety} (${item.color})</div>
-                        <div class="summary-item-details">
-                            ${item.quantity} bunches × ${item.price} = ${item.lineTotal.toFixed(2)}<br>
-                            ${item.stems} stems/bunch
-                        </div>
+                summaryHTML += `<div class="order-summary-item">
+                    <div class="summary-item-name">${item.variety} (${item.color})</div>
+                    <div class="summary-item-details">
+                        ${item.quantity} bunches × ${item.price} = $${item.lineTotal.toFixed(2)}<br>
+                        ${item.stems} stems/bunch
                     </div>
-                `;
+                </div>`;
             });
             
-            summaryHTML += `
-                <div class="summary-total">
-                    Total: ${totalBunches} bunches | ${totalAmount.toFixed(2)}
-                </div>
-            `;
+            summaryHTML += `<div class="summary-total">Total: ${totalBunches} bunches | $${totalAmount.toFixed(2)}</div>`;
             
             document.getElementById('orderSummaryContent').innerHTML = summaryHTML;
             document.getElementById('orderModal').style.display = 'flex';
         }
-        
+
         function closeOrderSummary() {
             document.getElementById('orderModal').style.display = 'none';
         }
-        
+
         function confirmOrder() {
             document.getElementById('orderModal').style.display = 'none';
             submitOrder();
         }
 
-        async function submitOrder() {
+        function submitOrder() {
             const floristName = document.getElementById('floristName').value.trim();
             const floristEmail = document.getElementById('floristEmail').value.trim();
             const submitBtn = document.getElementById('submitBtn');
@@ -887,10 +775,7 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting Order...';
             
-            let orderSummary = `ORDER from ${floristName}\n`;
-            orderSummary += `Email: ${floristEmail}\n\n`;
-            orderSummary += `ORDER DETAILS:\n`;
-            orderSummary += `${'='.repeat(60)}\n\n`;
+            let orderSummary = `ORDER from ${floristName}\nEmail: ${floristEmail}\n\nORDER DETAILS:\n${'='.repeat(60)}\n\n`;
             
             orderItems.forEach(item => {
                 orderSummary += `${item.variety} (${item.color})\n`;
@@ -902,11 +787,11 @@
             
             document.getElementById('emailSubject').value = `Neve Farms Order - ${floristName}`;
             document.getElementById('orderDetails').value = orderSummary;
-            
-            // Let the form submit naturally
             document.getElementById('orderForm').submit();
-            
-            return true;
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
         }
 
         loadProducts();
