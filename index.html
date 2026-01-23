@@ -381,6 +381,14 @@
             max-width: 100%;
             max-height: 70vh;
             display: block;
+            margin: 0 auto;
+        }
+        
+        .image-loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
         }
         
         @media (max-width: 768px) {
@@ -535,7 +543,8 @@
                         <button class="close-modal" onclick="closeImageModal()">&times;</button>
                     </div>
                     <div class="image-modal-body">
-                        <img id="imageModalImg" src="" alt="Flower">
+                        <div class="image-loading" id="imageLoading">Loading image...</div>
+                        <img id="imageModalImg" src="" alt="Flower" style="display: none;" onload="this.style.display='block'; document.getElementById('imageLoading').style.display='none';" onerror="document.getElementById('imageLoading').innerHTML='⚠️ Could not load image. Try opening in new tab.'; this.style.display='none';">
                     </div>
                 </div>
             </div>
@@ -803,6 +812,9 @@
             const imageUrl = product[5];
             
             document.getElementById('imageModalTitle').textContent = varietyName;
+            document.getElementById('imageLoading').style.display = 'block';
+            document.getElementById('imageLoading').innerHTML = 'Loading image...';
+            document.getElementById('imageModalImg').style.display = 'none';
             document.getElementById('imageModalImg').src = imageUrl;
             document.getElementById('imageModal').style.display = 'flex';
         }
