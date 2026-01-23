@@ -592,6 +592,9 @@
             tbody.innerHTML = '';
             cardsContainer.innerHTML = '';
             
+            // Store products globally so the onclick can access them
+            window.flowerData = productsData;
+            
             productsData.forEach((product, index) => {
                 const variety = product[0] || '';
                 const color = product[1] || '';
@@ -601,7 +604,7 @@
                 const imageUrl = product[5] || '';
                 
                 const varietyHTML = imageUrl 
-                    ? `<a href="javascript:void(0)" onclick="showFlowerImage('${variety.replace(/'/g, "\\'")}', '${imageUrl}')" class="clickable-variety">${variety}</a>`
+                    ? `<a href="javascript:void(0)" onclick="showFlowerImageByIndex(${index})" class="clickable-variety">${variety}</a>`
                     : variety;
                 
                 const row = document.createElement('tr');
@@ -794,7 +797,11 @@
             document.getElementById('imageModal').style.display = 'none';
         }
         
-        function showFlowerImage(varietyName, imageUrl) {
+        function showFlowerImageByIndex(index) {
+            const product = window.flowerData[index];
+            const varietyName = product[0];
+            const imageUrl = product[5];
+            
             document.getElementById('imageModalTitle').textContent = varietyName;
             document.getElementById('imageModalImg').src = imageUrl;
             document.getElementById('imageModal').style.display = 'flex';
