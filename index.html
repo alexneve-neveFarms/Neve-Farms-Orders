@@ -544,7 +544,9 @@
                     </div>
                     <div class="image-modal-body">
                         <div class="image-loading" id="imageLoading">Loading image...</div>
-                        <img id="imageModalImg" src="" alt="Flower" style="display: none;" onload="this.style.display='block'; document.getElementById('imageLoading').style.display='none';" onerror="document.getElementById('imageLoading').innerHTML='⚠️ Could not load image. Try opening in new tab.'; this.style.display='none';">
+                        <img id="imageModalImg" src="" alt="Flower" style="display: none;" 
+                             onload="this.style.display='block'; document.getElementById('imageLoading').style.display='none';" 
+                             onerror="window.open(this.src, '_blank'); document.getElementById('imageModal').style.display='none';">
                     </div>
                 </div>
             </div>
