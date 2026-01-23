@@ -811,13 +811,41 @@
         function showFlowerImageByIndex(index) {
             const product = window.flowerData[index];
             const varietyName = product[0];
-            const imageUrl = product[5];
+            let imageUrl = product[5];
+            
+            // If it's an Imgur link without i. subdomain, convert it
+            if (imageUrl.includes('imgur.com') && !imageUrl.includes('i.imgur.com')) {
+                // Extract image ID and convert to direct link
+                const imgurId = imageUrl.match(/imgur\.com\/a\/([a-zA-Z0-9]+)/);
+                if (imgurId) {
+                    imageUrl = `https://i.imgur.com/${imgurId[1]}.jpeg`;
+                }
+            }
+            
+            console.log('Loading image:', imageUrl);
             
             document.getElementById('imageModalTitle').textContent = varietyName;
             document.getElementById('imageLoading').style.display = 'block';
             document.getElementById('imageLoading').innerHTML = 'Loading image...';
-            document.getElementById('imageModalImg').style.display = 'none';
-            document.getElementById('imageModalImg').src = imageUrl;
+            
+            const img = document.getElementById('imageModalImg');
+            img.style.display = 'none';
+            
+            // Create a new image object to test loading
+            const testImg = new Image();
+            testImg.onload = function() {
+                console.log('Image loaded successfully!');
+                img.src = imageUrl;
+                img.style.display = 'block';
+                document.getElementById('imageLoading').style.display = 'none';
+            };
+            testImg.onerror = function() {
+                console.log('Image failed to load, opening in new tab');
+                window.open(imageUrl, '_blank');
+                document.getElementById('imageModal').style.display = 'none';
+            };
+            testImg.src = imageUrl;
+            
             document.getElementById('imageModal').style.display = 'flex';
         }
 
