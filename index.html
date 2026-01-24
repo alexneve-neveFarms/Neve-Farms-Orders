@@ -517,6 +517,11 @@
                     </div>
                 </div>
                 
+                <div class="form-group" style="margin-top: 30px;">
+                    <label for="orderNotes">Order Notes (Optional)</label>
+                    <textarea id="orderNotes" name="Order_Notes" rows="4" placeholder="Add any special instructions, delivery notes, or comments here..." style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+                
                 <input type="hidden" name="Order_Details" id="orderDetails">
                 
                 <button type="button" class="submit-btn" id="submitBtn" onclick="showOrderSummary()">Review Order</button>
@@ -741,6 +746,14 @@
                 <strong>Email:</strong> ${floristEmail}
             </div>`;
             
+            const orderNotes = document.getElementById('orderNotes').value.trim();
+            if (orderNotes) {
+                summaryHTML += `<div style="margin-bottom: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                    <strong>Order Notes:</strong><br>
+                    ${orderNotes}
+                </div>`;
+            }
+            
             orderItems.forEach(item => {
                 summaryHTML += `<div class="order-summary-item">
                     <div class="summary-item-name">${item.variety} (${item.color})</div>
@@ -789,7 +802,14 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting Order...';
             
-            let orderSummary = `ORDER from ${floristName}\nEmail: ${floristEmail}\n\nORDER DETAILS:\n${'='.repeat(60)}\n\n`;
+            let orderSummary = `ORDER from ${floristName}\nEmail: ${floristEmail}\n\n`;
+            
+            const orderNotes = document.getElementById('orderNotes').value.trim();
+            if (orderNotes) {
+                orderSummary += `ORDER NOTES:\n${orderNotes}\n\n`;
+            }
+            
+            orderSummary += `ORDER DETAILS:\n${'='.repeat(60)}\n\n`;
             
             orderItems.forEach(item => {
                 orderSummary += `${item.variety} (${item.color})\n`;
