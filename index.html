@@ -568,27 +568,97 @@
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQl_SoP8e2LIVnXfI_qvYQhFGxcHQfI1BtNpRILgczLB7WNGT8B82LXjJoP58u70Q3NG1MP39S35-TJ/pub?output=csv';
         let productsData = [];
+        let retryCount = 0;
+        const MAX_RETRIES = 3;
 
-        function loadProducts() {
-            const CORS_PROXY = 'https://corsproxy.io/?';
+        // Multiple CORS proxies as fallbacks
+        const CORS_PROXIES = [
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
+            'https://cors-anywhere.herokuapp.com/'
+        ];
+
+        function loadProducts(proxyIndex = 0) {
+            const loadingEl = document.getElementById('loading');
+            
+            if (retryCount > 0) {
+                loadingEl.innerHTML = `Loading availability... (attempt ${retryCount + 1}/${MAX_RETRIES + 1})`;
+            }
+            
+            const CORS_PROXY = CORS_PROXIES[proxyIndex];
             const proxiedURL = CORS_PROXY + encodeURIComponent(CSV_URL);
+            
+            console.log(`Attempting to load from proxy ${proxyIndex + 1}: ${CORS_PROXY}`);
             
             Papa.parse(proxiedURL, {
                 download: true,
                 header: false,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    productsData = results.data.slice(1).filter(row => {
-                        const hasVariety = row[0] && row[0].trim() !== '' && row[0].toLowerCase() !== 'variety';
-                        const isAvailable = row[6] && row[6].trim().toLowerCase() === 'yes';
-                        return hasVariety && isAvailable;
-                    });
-                    displayProducts();
+                    if (results.data && results.data.length > 0) {
+                        productsData = results.data.slice(1).filter(row => {
+                            const hasVariety = row[0] && row[0].trim() !== '' && row[0].toLowerCase() !== 'variety';
+                            const isAvailable = row[6] && row[6].trim().toLowerCase() === 'yes';
+                            return hasVariety && isAvailable;
+                        });
+                        displayProducts();
+                        retryCount = 0; // Reset on success
+                    } else {
+                        handleLoadError(proxyIndex);
+                    }
                 },
                 error: function(error) {
-                    document.getElementById('loading').innerHTML = '⚠️ Error loading products. Please refresh the page.';
+                    console.error('Load error:', error);
+                    handleLoadError(proxyIndex);
                 }
             });
+        }
+
+        function handleLoadError(proxyIndex) {
+            const loadingEl = document.getElementById('loading');
+            
+            // Try next proxy
+            if (proxyIndex < CORS_PROXIES.length - 1) {
+                console.log('Trying next proxy...');
+                setTimeout(() => loadProducts(proxyIndex + 1), 1000);
+                return;
+            }
+            
+            // All proxies failed, try retry
+            if (retryCount < MAX_RETRIES) {
+                retryCount++;
+                console.log(`Retry ${retryCount}/${MAX_RETRIES}`);
+                setTimeout(() => loadProducts(0), 2000);
+                return;
+            }
+            
+            // All retries exhausted
+            loadingEl.innerHTML = `
+                <div style="color: #f44336;">
+                    ⚠️ Unable to load flower availability.<br>
+                    <button onclick="retryLoad()" style="
+                        margin-top: 15px;
+                        padding: 12px 24px;
+                        background: #667eea;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">Try Again</button>
+                    <div style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                        If this persists, please check your internet connection<br>
+                        or contact us at alexneve@nevefarms.com
+                    </div>
+                </div>
+            `;
+        }
+
+        function retryLoad() {
+            retryCount = 0;
+            document.getElementById('loading').innerHTML = 'Loading availability...';
+            loadProducts(0);
         }
 
         function displayProducts() {
