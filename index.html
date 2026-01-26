@@ -549,9 +549,7 @@
                     </div>
                     <div class="image-modal-body">
                         <div class="image-loading" id="imageLoading">Loading image...</div>
-                        <img id="imageModalImg" src="" alt="Flower" style="display: none;" 
-                             onload="this.style.display='block'; document.getElementById('imageLoading').style.display='none';" 
-                             onerror="window.open(this.src, '_blank'); document.getElementById('imageModal').style.display='none';">
+                        <img id="imageModalImg" alt="Flower" style="display: none;">
                     </div>
                 </div>
             </div>
@@ -622,7 +620,7 @@
                 const imageUrl = product[5] || '';
                 
                 const varietyHTML = imageUrl 
-                    ? `${variety}`
+                    ? `<span class="clickable-variety" onclick="showFlowerImageByIndex(${index})">${variety}</span>`
                     : variety;
                 
                 const row = document.createElement('tr');
@@ -858,8 +856,15 @@
             testImg.onload = function() {
                 console.log('Image loaded successfully!');
                 img.src = imageUrl;
-                img.style.display = 'block';
-                document.getElementById('imageLoading').style.display = 'none';
+                img.onload = function() {
+                    img.style.display = 'block';
+                    document.getElementById('imageLoading').style.display = 'none';
+                };
+                img.onerror = function() {
+                    console.log('Image failed to display in modal, opening in new tab');
+                    window.open(imageUrl, '_blank');
+                    document.getElementById('imageModal').style.display = 'none';
+                };
             };
             testImg.onerror = function() {
                 console.log('Image failed to load, opening in new tab');
