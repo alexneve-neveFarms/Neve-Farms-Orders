@@ -622,7 +622,7 @@
                 const imageUrl = product[5] || '';
                 
                 const varietyHTML = imageUrl 
-                    ? `<a href="javascript:void(0)" onclick="showFlowerImageByIndex(${index})" class="clickable-variety">${variety}</a>`
+                    ? `${variety}`
                     : variety;
                 
                 const row = document.createElement('tr');
