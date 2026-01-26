@@ -581,7 +581,9 @@
                 skipEmptyLines: true,
                 complete: function(results) {
                     productsData = results.data.slice(1).filter(row => {
-                        return row[0] && row[0].trim() !== '' && row[0].toLowerCase() !== 'variety';
+                        const hasVariety = row[0] && row[0].trim() !== '' && row[0].toLowerCase() !== 'variety';
+                        const isAvailable = row[6] && row[6].trim().toLowerCase() === 'yes';
+                        return hasVariety && isAvailable;
                     });
                     displayProducts();
                 },
