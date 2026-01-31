@@ -566,73 +566,132 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script>
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQl_SoP8e2LIVnXfI_qvYQhFGxcHQfI1BtNpRILgczLB7WNGT8B82LXjJoP58u70Q3NG1MP39S35-TJ/pub?output=csv';
+        const SHEET_ID = '2PACX-1vQl_SoP8e2LIVnXfI_qvYQhFGxcHQfI1BtNpRILgczLB7WNGT8B82LXjJoP58u70Q3NG1MP39S35-TJ';
         let productsData = [];
-        let retryCount = 0;
-        const MAX_RETRIES = 3;
+        let loadAttempt = 0;
 
-        // Multiple CORS proxies as fallbacks
-        const CORS_PROXIES = [
-            'https://corsproxy.io/?',
-            'https://api.allorigins.win/raw?url=',
-            'https://cors-anywhere.herokuapp.com/'
-        ];
-
-        function loadProducts(proxyIndex = 0) {
-            const loadingEl = document.getElementById('loading');
+        // Strategy 1: Direct Google Sheets (no CORS proxy)
+        function tryDirectLoad() {
+            console.log('Strategy 1: Attempting direct Google Sheets load...');
+            const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
             
-            if (retryCount > 0) {
-                loadingEl.innerHTML = `Loading availability... (attempt ${retryCount + 1}/${MAX_RETRIES + 1})`;
-            }
-            
-            const CORS_PROXY = CORS_PROXIES[proxyIndex];
-            const proxiedURL = CORS_PROXY + encodeURIComponent(CSV_URL);
-            
-            console.log(`Attempting to load from proxy ${proxyIndex + 1}: ${CORS_PROXY}`);
-            
-            Papa.parse(proxiedURL, {
-                download: true,
-                header: false,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    if (results.data && results.data.length > 0) {
-                        productsData = results.data.slice(1).filter(row => {
-                            const hasVariety = row[0] && row[0].trim() !== '' && row[0].toLowerCase() !== 'variety';
-                            const isAvailable = row[6] && row[6].trim().toLowerCase() === 'yes';
-                            return hasVariety && isAvailable;
-                        });
-                        displayProducts();
-                        retryCount = 0; // Reset on success
-                    } else {
-                        handleLoadError(proxyIndex);
-                    }
-                },
-                error: function(error) {
-                    console.error('Load error:', error);
-                    handleLoadError(proxyIndex);
-                }
+            return fetch(url, {
+                mode: 'cors',
+                cache: 'no-cache'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.text();
+            })
+            .then(text => {
+                console.log('Direct load successful!');
+                return Papa.parse(text, {header: false, skipEmptyLines: true});
+            })
+            .catch(error => {
+                console.log('Direct load failed:', error.message);
+                throw error;
             });
         }
 
-        function handleLoadError(proxyIndex) {
+        // Strategy 2: CORS Proxies
+        function tryProxyLoad(proxyIndex = 0) {
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://corsproxy.io/?',
+                ''  // Direct attempt as last resort
+            ];
+            
+            if (proxyIndex >= proxies.length) {
+                throw new Error('All proxies exhausted');
+            }
+            
+            const proxy = proxies[proxyIndex];
+            const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
+            const proxiedURL = proxy ? proxy + encodeURIComponent(url) : url;
+            
+            console.log(`Strategy 2.${proxyIndex + 1}: Trying proxy: ${proxy || 'direct'}`);
+            
+            return new Promise((resolve, reject) => {
+                Papa.parse(proxiedURL, {
+                    download: true,
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        if (results.data && results.data.length > 1) {
+                            console.log(`Proxy ${proxyIndex + 1} successful!`);
+                            resolve(results);
+                        } else {
+                            reject(new Error('No data received'));
+                        }
+                    },
+                    error: function(error) {
+                        console.log(`Proxy ${proxyIndex + 1} failed:`, error);
+                        reject(error);
+                    }
+                });
+            }).catch(error => {
+                if (proxyIndex < proxies.length - 1) {
+                    return tryProxyLoad(proxyIndex + 1);
+                }
+                throw error;
+            });
+        }
+
+        // Main loading function with cascading strategies
+        async function loadProducts() {
             const loadingEl = document.getElementById('loading');
+            loadAttempt++;
             
-            // Try next proxy
-            if (proxyIndex < CORS_PROXIES.length - 1) {
-                console.log('Trying next proxy...');
-                setTimeout(() => loadProducts(proxyIndex + 1), 1000);
-                return;
+            if (loadAttempt > 1) {
+                loadingEl.innerHTML = `Loading availability... (attempt ${loadAttempt})`;
             }
             
-            // All proxies failed, try retry
-            if (retryCount < MAX_RETRIES) {
-                retryCount++;
-                console.log(`Retry ${retryCount}/${MAX_RETRIES}`);
-                setTimeout(() => loadProducts(0), 2000);
+            try {
+                // Try Strategy 1: Direct load
+                let results = await tryDirectLoad();
+                processResults(results);
                 return;
+            } catch (error1) {
+                console.log('Strategy 1 failed, trying Strategy 2...');
+                
+                try {
+                    // Try Strategy 2: Proxy loads
+                    let results = await tryProxyLoad();
+                    processResults(results);
+                    return;
+                } catch (error2) {
+                    console.log('All strategies failed');
+                    handleLoadFailure();
+                }
             }
+        }
+
+        function processResults(results) {
+            console.log('Processing results:', results.data.length, 'rows');
             
-            // All retries exhausted
+            productsData = results.data.slice(1).filter(row => {
+                const hasVariety = row[0] && row[0].trim() !== '' && row[0].toLowerCase() !== 'variety';
+                const isAvailable = row[6] && row[6].trim().toLowerCase() === 'yes';
+                return hasVariety && isAvailable;
+            });
+            
+            console.log('Filtered to', productsData.length, 'available products');
+            
+            if (productsData.length > 0) {
+                displayProducts();
+                loadAttempt = 0; // Reset on success
+            } else {
+                console.log('No available products found');
+                if (loadAttempt < 3) {
+                    setTimeout(() => loadProducts(), 2000);
+                } else {
+                    handleLoadFailure();
+                }
+            }
+        }
+
+        function handleLoadFailure() {
+            const loadingEl = document.getElementById('loading');
             loadingEl.innerHTML = `
                 <div style="color: #f44336;">
                     ⚠️ Unable to load flower availability.<br>
@@ -656,9 +715,9 @@
         }
 
         function retryLoad() {
-            retryCount = 0;
+            loadAttempt = 0;
             document.getElementById('loading').innerHTML = 'Loading availability...';
-            loadProducts(0);
+            loadProducts();
         }
 
         function displayProducts() {
@@ -678,7 +737,6 @@
             tbody.innerHTML = '';
             cardsContainer.innerHTML = '';
             
-            // Store products globally so the onclick can access them
             window.flowerData = productsData;
             
             productsData.forEach((product, index) => {
@@ -903,9 +961,7 @@
             const varietyName = product[0];
             let imageUrl = product[5];
             
-            // If it's an Imgur link without i. subdomain, convert it
             if (imageUrl.includes('imgur.com') && !imageUrl.includes('i.imgur.com')) {
-                // Extract image ID and convert to direct link
                 const imgurId = imageUrl.match(/imgur\.com\/a\/([a-zA-Z0-9]+)/);
                 if (imgurId) {
                     imageUrl = `https://i.imgur.com/${imgurId[1]}.jpeg`;
@@ -921,7 +977,6 @@
             const img = document.getElementById('imageModalImg');
             img.style.display = 'none';
             
-            // Create a new image object to test loading
             const testImg = new Image();
             testImg.onload = function() {
                 console.log('Image loaded successfully!');
@@ -946,6 +1001,7 @@
             document.getElementById('imageModal').style.display = 'flex';
         }
 
+        // Start loading when page is ready
         loadProducts();
     </script>
 </body>
