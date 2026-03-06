@@ -1,0 +1,1015 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2868
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="en">\
+<head>\
+    <meta charset="UTF-8">\
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+    <title>Neve Farms - Wholesale Orders</title>\
+    <style>\
+        * \{\
+            margin: 0;\
+            padding: 0;\
+            box-sizing: border-box;\
+        \}\
+        \
+        body \{\
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;\
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\
+            min-height: 100vh;\
+            padding: 20px;\
+        \}\
+        \
+        .container \{\
+            max-width: 1100px;\
+            margin: 0 auto;\
+            background: white;\
+            border-radius: 16px;\
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);\
+            overflow: hidden;\
+        \}\
+        \
+        .header \{\
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\
+            color: white;\
+            padding: 40px;\
+            text-align: center;\
+        \}\
+        \
+        .header h1 \{\
+            font-size: 2.5em;\
+            margin-bottom: 10px;\
+        \}\
+        \
+        .header p \{\
+            font-size: 1.1em;\
+            opacity: 0.9;\
+        \}\
+        \
+        .content \{\
+            padding: 40px;\
+        \}\
+        \
+        .customer-info \{\
+            background: #f8f9fa;\
+            padding: 30px;\
+            border-radius: 12px;\
+            margin-bottom: 30px;\
+        \}\
+        \
+        .customer-info h2 \{\
+            margin-bottom: 20px;\
+            color: #333;\
+        \}\
+        \
+        .form-group \{\
+            margin-bottom: 20px;\
+        \}\
+        \
+        .form-group label \{\
+            display: block;\
+            margin-bottom: 8px;\
+            font-weight: 600;\
+            color: #555;\
+        \}\
+        \
+        .form-group input \{\
+            width: 100%;\
+            padding: 12px;\
+            border: 2px solid #e0e0e0;\
+            border-radius: 8px;\
+            font-size: 16px;\
+            transition: border-color 0.3s;\
+        \}\
+        \
+        .form-group input:focus \{\
+            outline: none;\
+            border-color: #667eea;\
+        \}\
+        \
+        .products-section h2 \{\
+            margin-bottom: 20px;\
+            color: #333;\
+        \}\
+        \
+        .loading \{\
+            text-align: center;\
+            padding: 40px;\
+            color: #667eea;\
+            font-size: 1.2em;\
+        \}\
+        \
+        .product-table \{\
+            width: 100%;\
+            border-collapse: collapse;\
+            margin-bottom: 30px;\
+        \}\
+        \
+        .product-table thead \{\
+            background: #667eea;\
+            color: white;\
+        \}\
+        \
+        .product-table th \{\
+            padding: 15px 10px;\
+            text-align: left;\
+            font-weight: 600;\
+        \}\
+        \
+        .product-table td \{\
+            padding: 15px 10px;\
+            border-bottom: 1px solid #e0e0e0;\
+        \}\
+        \
+        .product-table tbody tr:hover \{\
+            background: #f8f9fa;\
+        \}\
+        \
+        .product-card \{\
+            display: none;\
+        \}\
+        \
+        @media (max-width: 768px) \{\
+            .product-table \{\
+                display: none !important;\
+            \}\
+            \
+            .product-card \{\
+                display: block !important;\
+            \}\
+        \}\
+        \
+        .quantity-input \{\
+            width: 80px;\
+            padding: 8px;\
+            border: 2px solid #e0e0e0;\
+            border-radius: 6px;\
+            font-size: 16px;\
+            text-align: center;\
+        \}\
+        \
+        .color-badge \{\
+            display: inline-block;\
+            padding: 4px 12px;\
+            border-radius: 20px;\
+            background: #e3f2fd;\
+            color: #1976d2;\
+            font-size: 14px;\
+            font-weight: 500;\
+        \}\
+        \
+        .clickable-variety \{\
+            color: #667eea;\
+            cursor: pointer;\
+            text-decoration: underline;\
+        \}\
+        \
+        .clickable-variety:hover \{\
+            color: #764ba2;\
+        \}\
+        \
+        .submit-btn \{\
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\
+            color: white;\
+            border: none;\
+            padding: 16px 40px;\
+            font-size: 18px;\
+            font-weight: 600;\
+            border-radius: 8px;\
+            cursor: pointer;\
+            width: 100%;\
+            transition: transform 0.2s, box-shadow 0.2s;\
+        \}\
+        \
+        .submit-btn:hover \{\
+            transform: translateY(-2px);\
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);\
+        \}\
+        \
+        .submit-btn:disabled \{\
+            opacity: 0.6;\
+            cursor: not-allowed;\
+            transform: none;\
+        \}\
+        \
+        .success-message, .error-message \{\
+            padding: 20px;\
+            border-radius: 8px;\
+            margin-top: 20px;\
+            text-align: center;\
+            display: none;\
+        \}\
+        \
+        .success-message \{\
+            background: #4caf50;\
+            color: white;\
+        \}\
+        \
+        .error-message \{\
+            background: #f44336;\
+            color: white;\
+        \}\
+        \
+        .order-total \{\
+            background: #f8f9fa;\
+            padding: 25px;\
+            border-radius: 12px;\
+            margin: 30px 0;\
+            border-left: 5px solid #667eea;\
+        \}\
+        \
+        .order-total h3 \{\
+            margin: 0 0 15px 0;\
+            color: #333;\
+        \}\
+        \
+        .total-details \{\
+            display: flex;\
+            justify-content: space-between;\
+            align-items: center;\
+            font-size: 1.1em;\
+        \}\
+        \
+        .total-amount \{\
+            font-size: 1.5em;\
+            font-weight: 700;\
+            color: #667eea;\
+        \}\
+        \
+        .modal \{\
+            display: none;\
+            position: fixed;\
+            top: 0;\
+            left: 0;\
+            width: 100%;\
+            height: 100%;\
+            background: rgba(0, 0, 0, 0.7);\
+            z-index: 1000;\
+            align-items: center;\
+            justify-content: center;\
+        \}\
+        \
+        .modal-content \{\
+            background: white;\
+            padding: 40px;\
+            border-radius: 16px;\
+            max-width: 600px;\
+            max-height: 80vh;\
+            overflow-y: auto;\
+            margin: 20px;\
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);\
+        \}\
+        \
+        .modal-header \{\
+            display: flex;\
+            justify-content: space-between;\
+            align-items: center;\
+            margin-bottom: 20px;\
+            padding-bottom: 15px;\
+            border-bottom: 2px solid #e0e0e0;\
+        \}\
+        \
+        .modal-header h2 \{\
+            margin: 0;\
+            color: #333;\
+        \}\
+        \
+        .close-modal \{\
+            background: none;\
+            border: none;\
+            font-size: 28px;\
+            cursor: pointer;\
+            color: #999;\
+            padding: 0;\
+            width: 30px;\
+            height: 30px;\
+            display: flex;\
+            align-items: center;\
+            justify-content: center;\
+        \}\
+        \
+        .close-modal:hover \{\
+            color: #333;\
+        \}\
+        \
+        .order-summary-item \{\
+            padding: 15px;\
+            border-bottom: 1px solid #e0e0e0;\
+        \}\
+        \
+        .summary-item-name \{\
+            font-weight: 600;\
+            color: #333;\
+            margin-bottom: 5px;\
+        \}\
+        \
+        .summary-item-details \{\
+            color: #666;\
+            font-size: 0.95em;\
+        \}\
+        \
+        .summary-total \{\
+            background: #667eea;\
+            color: white;\
+            padding: 20px;\
+            border-radius: 8px;\
+            margin-top: 20px;\
+            text-align: center;\
+            font-size: 1.2em;\
+            font-weight: 600;\
+        \}\
+        \
+        .modal-actions \{\
+            display: flex;\
+            gap: 15px;\
+            margin-top: 25px;\
+        \}\
+        \
+        .btn-secondary \{\
+            background: #e0e0e0;\
+            color: #333;\
+            border: none;\
+            padding: 14px 30px;\
+            font-size: 16px;\
+            font-weight: 600;\
+            border-radius: 8px;\
+            cursor: pointer;\
+            flex: 1;\
+        \}\
+        \
+        .btn-confirm \{\
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\
+            color: white;\
+            border: none;\
+            padding: 14px 30px;\
+            font-size: 16px;\
+            font-weight: 600;\
+            border-radius: 8px;\
+            cursor: pointer;\
+            flex: 2;\
+        \}\
+        \
+        .image-modal \{\
+            display: none;\
+            position: fixed;\
+            top: 0;\
+            left: 0;\
+            width: 100%;\
+            height: 100%;\
+            background: rgba(0, 0, 0, 0.9);\
+            z-index: 2000;\
+            align-items: center;\
+            justify-content: center;\
+        \}\
+        \
+        .image-modal-content \{\
+            max-width: 90%;\
+            max-height: 90vh;\
+            background: white;\
+            border-radius: 12px;\
+            overflow: hidden;\
+        \}\
+        \
+        .image-modal-header \{\
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\
+            color: white;\
+            padding: 20px;\
+            display: flex;\
+            justify-content: space-between;\
+            align-items: center;\
+        \}\
+        \
+        .image-modal-body img \{\
+            max-width: 100%;\
+            max-height: 70vh;\
+            display: block;\
+            margin: 0 auto;\
+        \}\
+        \
+        .image-loading \{\
+            text-align: center;\
+            padding: 40px;\
+            color: #667eea;\
+            font-size: 1.2em;\
+        \}\
+        \
+        @media (max-width: 768px) \{\
+            .header h1 \{\
+                font-size: 1.8em;\
+            \}\
+            \
+            .content \{\
+                padding: 20px;\
+            \}\
+            \
+            .flower-card \{\
+                background: white;\
+                border: 2px solid #e0e0e0;\
+                border-radius: 12px;\
+                padding: 20px;\
+                margin-bottom: 15px;\
+            \}\
+            \
+            .flower-card-header \{\
+                display: flex;\
+                justify-content: space-between;\
+                margin-bottom: 12px;\
+                padding-bottom: 12px;\
+                border-bottom: 1px solid #e0e0e0;\
+            \}\
+            \
+            .flower-name \{\
+                font-size: 1.1em;\
+                font-weight: 700;\
+                color: #333;\
+            \}\
+            \
+            .flower-card-details \{\
+                display: grid;\
+                grid-template-columns: 1fr 1fr;\
+                gap: 10px;\
+                margin-bottom: 15px;\
+                font-size: 0.95em;\
+            \}\
+            \
+            .detail-item \{\
+                display: flex;\
+                flex-direction: column;\
+            \}\
+            \
+            .detail-label \{\
+                font-size: 0.85em;\
+                color: #666;\
+                margin-bottom: 3px;\
+            \}\
+            \
+            .detail-value \{\
+                font-weight: 600;\
+                color: #333;\
+            \}\
+            \
+            .flower-card-quantity \{\
+                display: flex;\
+                align-items: center;\
+                justify-content: space-between;\
+                padding: 15px;\
+                background: #f8f9fa;\
+                border-radius: 8px;\
+            \}\
+            \
+            .flower-card-quantity input \{\
+                width: 80px;\
+                padding: 10px;\
+                font-size: 18px;\
+            \}\
+        \}\
+    </style>\
+</head>\
+<body>\
+    <div class="container">\
+        <div class="header">\
+            <h1>\uc0\u55356 \u57144  Neve Farms Wholesale Availability</h1>\
+            <p>Weekly Flower Availability & Ordering</p>\
+        </div>\
+        \
+        <div class="content">\
+            <form id="orderForm" action="https://formsubmit.co/alexneve@nevefarms.com" method="POST">\
+                <input type="hidden" name="_subject" id="emailSubject" value="New Neve Farms Order">\
+                <input type="hidden" name="_autoresponse" value="Thank you for your order! We've received your Neve Farms flower order and will process it shortly. You'll receive confirmation once it's ready.">\
+                <input type="hidden" name="_template" value="box">\
+                \
+                <div class="customer-info">\
+                    <h2>Your Information</h2>\
+                    <div class="form-group">\
+                        <label for="floristName">Business Name *</label>\
+                        <input type="text" id="floristName" name="Business_Name" required placeholder="Enter your business name">\
+                    </div>\
+                    <div class="form-group">\
+                        <label for="floristEmail">Email Address *</label>\
+                        <input type="email" id="floristEmail" name="email" required placeholder="your@email.com">\
+                    </div>\
+                </div>\
+                \
+                <div class="products-section">\
+                    <h2>Available Flowers</h2>\
+                    <div id="loading" class="loading">Loading availability...</div>\
+                    \
+                    <table class="product-table" id="productTable" style="display: none;">\
+                        <thead>\
+                            <tr>\
+                                <th>Variety</th>\
+                                <th>Color</th>\
+                                <th>Stems/Bunch</th>\
+                                <th>Price/Bunch</th>\
+                                <th>Inventory</th>\
+                                <th>Order Qty</th>\
+                            </tr>\
+                        </thead>\
+                        <tbody id="productBody"></tbody>\
+                    </table>\
+                    \
+                    <div class="product-card" id="productCards"></div>\
+                </div>\
+                \
+                <div class="order-total" id="orderTotal" style="display: none;">\
+                    <h3>Order Total</h3>\
+                    <div class="total-details">\
+                        <span><strong id="totalBunches">0</strong> bunches selected</span>\
+                        <span class="total-amount">$<span id="totalAmount">0.00</span></span>\
+                    </div>\
+                </div>\
+                \
+                <div class="form-group" style="margin-top: 30px;">\
+                    <label for="orderNotes">Order Notes (Optional)</label>\
+                    <textarea id="orderNotes" name="Order_Notes" rows="4" placeholder="Add any special instructions, delivery notes, or comments here..." style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; font-family: inherit; resize: vertical;"></textarea>\
+                </div>\
+                \
+                <input type="hidden" name="Order_Details" id="orderDetails">\
+                \
+                <button type="button" class="submit-btn" id="submitBtn" onclick="showOrderSummary()">Review Order</button>\
+            </form>\
+            \
+            <div class="modal" id="orderModal">\
+                <div class="modal-content">\
+                    <div class="modal-header">\
+                        <h2>Review Your Order</h2>\
+                        <button class="close-modal" onclick="closeOrderSummary()">&times;</button>\
+                    </div>\
+                    <div id="orderSummaryContent"></div>\
+                    <div class="modal-actions">\
+                        <button class="btn-secondary" onclick="closeOrderSummary()">Edit Order</button>\
+                        <button class="btn-confirm" onclick="confirmOrder()">Confirm & Submit</button>\
+                    </div>\
+                </div>\
+            </div>\
+            \
+            <div class="image-modal" id="imageModal" onclick="closeImageModal()">\
+                <div class="image-modal-content" onclick="event.stopPropagation()">\
+                    <div class="image-modal-header">\
+                        <h3 id="imageModalTitle">Flower</h3>\
+                        <button class="close-modal" onclick="closeImageModal()">&times;</button>\
+                    </div>\
+                    <div class="image-modal-body">\
+                        <div class="image-loading" id="imageLoading">Loading image...</div>\
+                        <img id="imageModalImg" alt="Flower" style="display: none;">\
+                    </div>\
+                </div>\
+            </div>\
+            \
+            <div class="success-message" id="successMessage">\
+                \uc0\u10003  Order submitted successfully! Check your email for confirmation.\
+            </div>\
+            \
+            <div class="error-message" id="errorMessage">\
+                \uc0\u10007  Please fill in your information and select at least one item.\
+            </div>\
+        </div>\
+    </div>\
+\
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>\
+    <script>\
+        const SHEET_ID = '2PACX-1vRIOyNsSoMOuadmjgjESjgaMMjpt_pGZkVHJd3oSmf7EU9Q54facmf_Buhoogy4Cfo44HDYyer2Uxuy';\
+        let productsData = [];\
+        let loadAttempt = 0;\
+\
+        // Strategy 1: Direct Google Sheets (no CORS proxy)\
+        function tryDirectLoad() \{\
+            console.log('Strategy 1: Attempting direct Google Sheets load...');\
+            const url = `https://docs.google.com/spreadsheets/d/e/$\{SHEET_ID\}/pub?output=csv`;\
+            \
+            return fetch(url, \{\
+                mode: 'cors',\
+                cache: 'no-cache'\
+            \})\
+            .then(response => \{\
+                if (!response.ok) throw new Error(`HTTP $\{response.status\}`);\
+                return response.text();\
+            \})\
+            .then(text => \{\
+                console.log('Direct load successful!');\
+                return Papa.parse(text, \{header: false, skipEmptyLines: true\});\
+            \})\
+            .catch(error => \{\
+                console.log('Direct load failed:', error.message);\
+                throw error;\
+            \});\
+        \}\
+\
+        // Strategy 2: CORS Proxies\
+        function tryProxyLoad(proxyIndex = 0) \{\
+            const proxies = [\
+                'https://api.allorigins.win/raw?url=',\
+                'https://corsproxy.io/?',\
+                ''  // Direct attempt as last resort\
+            ];\
+            \
+            if (proxyIndex >= proxies.length) \{\
+                throw new Error('All proxies exhausted');\
+            \}\
+            \
+            const proxy = proxies[proxyIndex];\
+            const url = `https://docs.google.com/spreadsheets/d/e/$\{SHEET_ID\}/pub?output=csv`;\
+            const proxiedURL = proxy ? proxy + encodeURIComponent(url) : url;\
+            \
+            console.log(`Strategy 2.$\{proxyIndex + 1\}: Trying proxy: $\{proxy || 'direct'\}`);\
+            \
+            return new Promise((resolve, reject) => \{\
+                Papa.parse(proxiedURL, \{\
+                    download: true,\
+                    header: false,\
+                    skipEmptyLines: true,\
+                    complete: function(results) \{\
+                        if (results.data && results.data.length > 1) \{\
+                            console.log(`Proxy $\{proxyIndex + 1\} successful!`);\
+                            resolve(results);\
+                        \} else \{\
+                            reject(new Error('No data received'));\
+                        \}\
+                    \},\
+                    error: function(error) \{\
+                        console.log(`Proxy $\{proxyIndex + 1\} failed:`, error);\
+                        reject(error);\
+                    \}\
+                \});\
+            \}).catch(error => \{\
+                if (proxyIndex < proxies.length - 1) \{\
+                    return tryProxyLoad(proxyIndex + 1);\
+                \}\
+                throw error;\
+            \});\
+        \}\
+\
+        // Main loading function with cascading strategies\
+        async function loadProducts() \{\
+            const loadingEl = document.getElementById('loading');\
+            loadAttempt++;\
+            \
+            if (loadAttempt > 1) \{\
+                loadingEl.innerHTML = `Loading availability... (attempt $\{loadAttempt\})`;\
+            \}\
+            \
+            try \{\
+                // Try Strategy 1: Direct load\
+                let results = await tryDirectLoad();\
+                processResults(results);\
+                return;\
+            \} catch (error1) \{\
+                console.log('Strategy 1 failed, trying Strategy 2...');\
+                \
+                try \{\
+                    // Try Strategy 2: Proxy loads\
+                    let results = await tryProxyLoad();\
+                    processResults(results);\
+                    return;\
+                \} catch (error2) \{\
+                    console.log('All strategies failed');\
+                    handleLoadFailure();\
+                \}\
+            \}\
+        \}\
+\
+        function processResults(results) \{\
+            console.log('Processing results:', results.data.length, 'rows');\
+            \
+            productsData = results.data.slice(1).filter(row => \{\
+                const hasVariety = row[0] && row[0].trim() !== '' && row[0].toLowerCase() !== 'variety';\
+                const isAvailable = row[6] && row[6].trim().toLowerCase() === 'yes';\
+                return hasVariety && isAvailable;\
+            \});\
+            \
+            console.log('Filtered to', productsData.length, 'available products');\
+            \
+            if (productsData.length > 0) \{\
+                displayProducts();\
+                loadAttempt = 0; // Reset on success\
+            \} else \{\
+                console.log('No available products found');\
+                if (loadAttempt < 3) \{\
+                    setTimeout(() => loadProducts(), 2000);\
+                \} else \{\
+                    handleLoadFailure();\
+                \}\
+            \}\
+        \}\
+\
+        function handleLoadFailure() \{\
+            const loadingEl = document.getElementById('loading');\
+            loadingEl.innerHTML = `\
+                <div style="color: #f44336;">\
+                    \uc0\u9888 \u65039  Unable to load flower availability.<br>\
+                    <button onclick="retryLoad()" style="\
+                        margin-top: 15px;\
+                        padding: 12px 24px;\
+                        background: #667eea;\
+                        color: white;\
+                        border: none;\
+                        border-radius: 8px;\
+                        font-size: 16px;\
+                        cursor: pointer;\
+                        font-weight: 600;\
+                    ">Try Again</button>\
+                    <div style="margin-top: 15px; font-size: 0.9em; color: #666;">\
+                        If this persists, please check your internet connection<br>\
+                        or contact us at alexneve@nevefarms.com\
+                    </div>\
+                </div>\
+            `;\
+        \}\
+\
+        function retryLoad() \{\
+            loadAttempt = 0;\
+            document.getElementById('loading').innerHTML = 'Loading availability...';\
+            loadProducts();\
+        \}\
+\
+        function displayProducts() \{\
+            const tbody = document.getElementById('productBody');\
+            const cardsContainer = document.getElementById('productCards');\
+            const loading = document.getElementById('loading');\
+            const table = document.getElementById('productTable');\
+            \
+            if (productsData.length === 0) \{\
+                loading.innerHTML = '\uc0\u9888 \u65039  No products available.';\
+                return;\
+            \}\
+            \
+            loading.style.display = 'none';\
+            table.style.display = 'table';\
+            \
+            tbody.innerHTML = '';\
+            cardsContainer.innerHTML = '';\
+            \
+            window.flowerData = productsData;\
+            \
+            productsData.forEach((product, index) => \{\
+                const variety = product[0] || '';\
+                const color = product[1] || '';\
+                const stems = product[2] || '';\
+                const price = product[3] || '';\
+                const inventory = product[4] || '';\
+                const imageUrl = product[5] || '';\
+                \
+                const varietyHTML = imageUrl \
+                    ? `<span class="clickable-variety" onclick="showFlowerImageByIndex($\{index\})">$\{variety\}</span>`\
+                    : variety;\
+                \
+                const row = document.createElement('tr');\
+                row.innerHTML = `\
+                    <td><strong>$\{varietyHTML\}</strong></td>\
+                    <td><span class="color-badge">$\{color\}</span></td>\
+                    <td>$\{stems\}</td>\
+                    <td>$\{price\}</td>\
+                    <td>$\{inventory\}</td>\
+                    <td><input type="number" class="quantity-input" id="qty_$\{index\}" min="0" value="0" step="1" onchange="updateOrderTotal()"></td>\
+                `;\
+                tbody.appendChild(row);\
+                \
+                const card = document.createElement('div');\
+                card.className = 'flower-card';\
+                card.innerHTML = `\
+                    <div class="flower-card-header">\
+                        <div class="flower-name">$\{varietyHTML\}</div>\
+                        <span class="color-badge">$\{color\}</span>\
+                    </div>\
+                    <div class="flower-card-details">\
+                        <div class="detail-item">\
+                            <span class="detail-label">Stems/Bunch</span>\
+                            <span class="detail-value">$\{stems\}</span>\
+                        </div>\
+                        <div class="detail-item">\
+                            <span class="detail-label">Price/Bunch</span>\
+                            <span class="detail-value">$\{price\}</span>\
+                        </div>\
+                        <div class="detail-item">\
+                            <span class="detail-label">Available</span>\
+                            <span class="detail-value">$\{inventory\} bunches</span>\
+                        </div>\
+                    </div>\
+                    <div class="flower-card-quantity">\
+                        <label for="qty_mobile_$\{index\}">Bunches:</label>\
+                        <input type="number" id="qty_mobile_$\{index\}" min="0" value="0" step="1" onchange="syncQuantity($\{index\})">\
+                    </div>\
+                `;\
+                cardsContainer.appendChild(card);\
+            \});\
+        \}\
+\
+        function syncQuantity(index) \{\
+            const desktop = document.getElementById(`qty_$\{index\}`);\
+            const mobile = document.getElementById(`qty_mobile_$\{index\}`);\
+            if (desktop && mobile) \{\
+                desktop.value = mobile.value;\
+                mobile.value = desktop.value;\
+            \}\
+            updateOrderTotal();\
+        \}\
+\
+        function updateOrderTotal() \{\
+            let totalBunches = 0;\
+            let totalAmount = 0;\
+            \
+            productsData.forEach((product, index) => \{\
+                const qty = parseInt(document.getElementById(`qty_$\{index\}`).value) || 0;\
+                if (qty > 0) \{\
+                    totalBunches += qty;\
+                    const priceStr = product[3] || '$0';\
+                    const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;\
+                    totalAmount += price * qty;\
+                \}\
+            \});\
+            \
+            const orderTotalDiv = document.getElementById('orderTotal');\
+            if (totalBunches > 0) \{\
+                orderTotalDiv.style.display = 'block';\
+                document.getElementById('totalBunches').textContent = totalBunches;\
+                document.getElementById('totalAmount').textContent = totalAmount.toFixed(2);\
+            \} else \{\
+                orderTotalDiv.style.display = 'none';\
+            \}\
+        \}\
+\
+        function showOrderSummary() \{\
+            const floristName = document.getElementById('floristName').value.trim();\
+            const floristEmail = document.getElementById('floristEmail').value.trim();\
+            const errorMsg = document.getElementById('errorMessage');\
+            \
+            errorMsg.style.display = 'none';\
+            \
+            if (!floristName || !floristEmail) \{\
+                errorMsg.textContent = '\uc0\u10007  Please fill in your name and email.';\
+                errorMsg.style.display = 'block';\
+                return;\
+            \}\
+            \
+            const orderItems = [];\
+            let totalBunches = 0;\
+            let totalAmount = 0;\
+            \
+            productsData.forEach((product, index) => \{\
+                const qty = parseInt(document.getElementById(`qty_$\{index\}`).value) || 0;\
+                if (qty > 0) \{\
+                    const priceStr = product[3] || '$0';\
+                    const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;\
+                    totalBunches += qty;\
+                    totalAmount += price * qty;\
+                    \
+                    orderItems.push(\{\
+                        variety: product[0],\
+                        color: product[1],\
+                        stems: product[2],\
+                        price: product[3],\
+                        inventory: product[4],\
+                        quantity: qty,\
+                        lineTotal: price * qty\
+                    \});\
+                \}\
+            \});\
+            \
+            if (orderItems.length === 0) \{\
+                errorMsg.textContent = '\uc0\u10007  Please select at least one item to order.';\
+                errorMsg.style.display = 'block';\
+                return;\
+            \}\
+            \
+            let summaryHTML = `<div style="margin-bottom: 20px;">\
+                <strong>Ordering as:</strong> $\{floristName\}<br>\
+                <strong>Email:</strong> $\{floristEmail\}\
+            </div>`;\
+            \
+            const orderNotes = document.getElementById('orderNotes').value.trim();\
+            if (orderNotes) \{\
+                summaryHTML += `<div style="margin-bottom: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">\
+                    <strong>Order Notes:</strong><br>\
+                    $\{orderNotes\}\
+                </div>`;\
+            \}\
+            \
+            orderItems.forEach(item => \{\
+                summaryHTML += `<div class="order-summary-item">\
+                    <div class="summary-item-name">$\{item.variety\} ($\{item.color\})</div>\
+                    <div class="summary-item-details">\
+                        $\{item.quantity\} bunches \'d7 $\{item.price\} = $$\{item.lineTotal.toFixed(2)\}<br>\
+                        $\{item.stems\} stems/bunch\
+                    </div>\
+                </div>`;\
+            \});\
+            \
+            summaryHTML += `<div class="summary-total">Total: $\{totalBunches\} bunches | $$\{totalAmount.toFixed(2)\}</div>`;\
+            \
+            document.getElementById('orderSummaryContent').innerHTML = summaryHTML;\
+            document.getElementById('orderModal').style.display = 'flex';\
+        \}\
+\
+        function closeOrderSummary() \{\
+            document.getElementById('orderModal').style.display = 'none';\
+        \}\
+\
+        function confirmOrder() \{\
+            document.getElementById('orderModal').style.display = 'none';\
+            submitOrder();\
+        \}\
+\
+        function submitOrder() \{\
+            const floristName = document.getElementById('floristName').value.trim();\
+            const floristEmail = document.getElementById('floristEmail').value.trim();\
+            const submitBtn = document.getElementById('submitBtn');\
+            \
+            const orderItems = [];\
+            productsData.forEach((product, index) => \{\
+                const qty = parseInt(document.getElementById(`qty_$\{index\}`).value) || 0;\
+                if (qty > 0) \{\
+                    orderItems.push(\{\
+                        variety: product[0],\
+                        color: product[1],\
+                        stems: product[2],\
+                        price: product[3],\
+                        inventory: product[4],\
+                        quantity: qty\
+                    \});\
+                \}\
+            \});\
+            \
+            submitBtn.disabled = true;\
+            submitBtn.textContent = 'Submitting Order...';\
+            \
+            let orderSummary = `ORDER from $\{floristName\}\\nEmail: $\{floristEmail\}\\n\\n`;\
+            \
+            const orderNotes = document.getElementById('orderNotes').value.trim();\
+            if (orderNotes) \{\
+                orderSummary += `ORDER NOTES:\\n$\{orderNotes\}\\n\\n`;\
+            \}\
+            \
+            orderSummary += `ORDER DETAILS:\\n$\{'='.repeat(60)\}\\n\\n`;\
+            \
+            orderItems.forEach(item => \{\
+                orderSummary += `$\{item.variety\} ($\{item.color\})\\n`;\
+                orderSummary += `  Stems per Bunch: $\{item.stems\}\\n`;\
+                orderSummary += `  Price per Bunch: $\{item.price\}\\n`;\
+                orderSummary += `  Available Inventory: $\{item.inventory\}\\n`;\
+                orderSummary += `  Bunches Ordered: $\{item.quantity\}\\n\\n`;\
+            \});\
+            \
+            document.getElementById('emailSubject').value = `Neve Farms Order - $\{floristName\}`;\
+            document.getElementById('orderDetails').value = orderSummary;\
+            document.getElementById('orderForm').submit();\
+        \}\
+\
+        function closeImageModal() \{\
+            document.getElementById('imageModal').style.display = 'none';\
+        \}\
+        \
+        function showFlowerImageByIndex(index) \{\
+            const product = window.flowerData[index];\
+            const varietyName = product[0];\
+            let imageUrl = product[5];\
+            \
+            if (imageUrl.includes('imgur.com') && !imageUrl.includes('i.imgur.com')) \{\
+                const imgurId = imageUrl.match(/imgur\\.com\\/a\\/([a-zA-Z0-9]+)/);\
+                if (imgurId) \{\
+                    imageUrl = `https://i.imgur.com/$\{imgurId[1]\}.jpeg`;\
+                \}\
+            \}\
+            \
+            console.log('Loading image:', imageUrl);\
+            \
+            document.getElementById('imageModalTitle').textContent = varietyName;\
+            document.getElementById('imageLoading').style.display = 'block';\
+            document.getElementById('imageLoading').innerHTML = 'Loading image...';\
+            \
+            const img = document.getElementById('imageModalImg');\
+            img.style.display = 'none';\
+            \
+            const testImg = new Image();\
+            testImg.onload = function() \{\
+                console.log('Image loaded successfully!');\
+                img.src = imageUrl;\
+                img.onload = function() \{\
+                    img.style.display = 'block';\
+                    document.getElementById('imageLoading').style.display = 'none';\
+                \};\
+                img.onerror = function() \{\
+                    console.log('Image failed to display in modal, opening in new tab');\
+                    window.open(imageUrl, '_blank');\
+                    document.getElementById('imageModal').style.display = 'none';\
+                \};\
+            \};\
+            testImg.onerror = function() \{\
+                console.log('Image failed to load, opening in new tab');\
+                window.open(imageUrl, '_blank');\
+                document.getElementById('imageModal').style.display = 'none';\
+            \};\
+            testImg.src = imageUrl;\
+            \
+            document.getElementById('imageModal').style.display = 'flex';\
+        \}\
+\
+        // Start loading when page is ready\
+        loadProducts();\
+    </script>\
+</body>\
+</html>}
